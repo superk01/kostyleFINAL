@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="dataSource">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+		<property name="url" value="jdbc:oracle:thin:@221.139.29.101:1521:XE"/>
+		<property name="username" value="kostylemall"/>
+		<property name="password" value="1270"></property>
+	</bean>
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="configLocation" value="classpath:/mybatis-config.xml"/>
+		<property name="mapperLocations" value="classpath:mappers/*.xml"/>
+	</bean>
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<context:component-scan base-package="kostyle.category.persistence"/>
+	<context:component-scan base-package="kostyle.category.service"/>
+	<context:component-scan base-package="kostyle.closet.persistence"/>
+	<context:component-scan base-package="kostyle.closet.service"/>
+	<context:component-scan base-package="kostyle.help.persistence"/>
+	<context:component-scan base-package="kostyle.help.service"/>
+	<context:component-scan base-package="kostyle.history.persistence"/>
+	<context:component-scan base-package="kostyle.history.service"/>
+	<context:component-scan base-package="kostyle.favorite.persistence"/>
+	<context:component-scan base-package="kostyle.favorite.service"/>
+	<context:component-scan base-package="kostyle.join.persistence"/>
+	<context:component-scan base-package="kostyle.join.service"/>
+	<context:component-scan base-package="kostyle.login.persistence"/>
+	<context:component-scan base-package="kostyle.login.service"/>
+	<context:component-scan base-package="kostyle.mypage.persistence"/>
+	<context:component-scan base-package="kostyle.mypage.service"/>
+	<context:component-scan base-package="kostyle.search.persistence"/>
+	<context:component-scan base-package="kostyle.search.service"/>
+	<context:component-scan base-package="kostyle.stats.persistence"/>
+	<context:component-scan base-package="kostyle.stats.service"/>
+</beans>

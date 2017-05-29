@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<package name="kostyl.category.domain"/>
+		<package name="kostyl.closet.domain"/>
+		<package name="kostyl.favorite.domain"/>
+		<package name="kostyl.help.domain"/>
+		<package name="kostyl.history.domain"/>
+		<package name="kostyl.join.domain"/>
+		<package name="kostyl.login.domain"/>
+		<package name="kostyl.mypage.domain"/>
+		<package name="kostyl.search.domain"/>
+		<package name="kostyl.stats.domain"/>
+	</typeAliases>
+</configuration>
