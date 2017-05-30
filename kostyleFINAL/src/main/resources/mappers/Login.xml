@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="login.mapper.LoginMapper">
+	<cache />
+	
+	<select id="checkCustomerId" resultType="int" parameterType="String">
+		select count(*) from customer where c_id=#{c_id}
+	</select>
+	<select id="selectCustomer" resultType="CustomerMember" parameterType="CustomerMember">
+		select * from customer where c_id = #{c_id} and c_pass = #{c_pass}
+	</select>
+	
+	<select id="checkShopId" resultType="int" parameterType="int">
+		select count(*) from adshoppingmall where ad_id=#{ad_id}
+	</select>
+	<select id="selectShop" parameterType="AdShopMember" resultType="AdShopMember">
+		select * from  adshoppingmall where ad_id = #{ad_id} and ad_pass =#{ad_pass}
+	</select>
+	
+
+	
+</mapper>
+
+
+
+
+

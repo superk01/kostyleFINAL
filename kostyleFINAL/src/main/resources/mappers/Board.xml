@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+<mapper namespace="Customer.mapper.C_BoardMapper">
+	<cache />
+	<select id="list" resultType="C_Board" parameterType="Search">
+		select q_num as q_Num, q_title as q_Title, q_content as q_Content, sysdate as q_Date, 
+		
+		(SELECT DISTINCT c.c_id 
+		from QUESTION q, CUSTOMER c 
+		where q.C_NUM = c.C_NUM 
+		and c.c_num = qu.c_num) as c_Id,
+		
+		(SELECT DISTINCT s_sname 
+		from ADSHOPPINGMALL a, SHOPPINGMALL s, QUESTION q 
+		where q.s_num = a.s_num 
+		and s.s_num = q.s_num 
+		and q.q_num = qu.q_num) as s_Name
+		from question qu
+		
+			<if test="area != null">
+				<where>
+					<!-- <foreach collection="area" item="area"> -->
+						${area} LIKE #{searchKey}
+					<!-- </foreach> -->
+				</where>
+			</if>
+			<if test="searchMine !=null">
+				<where>
+					c_num = #{searchMine}
+				</where>
+			</if>
+			order by q_num desc
+	</select>
+	<select id="countBoard" resultType="int" parameterType="Search">
+		select count(*) from question
+		<if test="area != null">
+				<where>
+					<!-- <foreach collection="area" item="area"> -->
+						${area} LIKE #{searchKey}
+					<!-- </foreach> -->
+				</where>
+			</if>
+		<if test="searchMine !=null">
+			<where>
+			
+				c_num = #{searchMine}
+			</where>
+		</if>
+	</select>
+	
+	<select id="searchMineBoard" resultType="C_Board">
+		select * from customer where c_num = ${value}
+	</select>
+	<insert id="insertBoard" parameterType="C_Board">
+		insert into question 
+		(q_num, q_title, q_content, q_date, c_num, s_num)
+		VALUES
+		(#{q_Num},#{q_Title},#{q_Content},sysdate,#{c_Num},#{s_Num})
+	</insert>
+	<select id="add" resultType="Integer">
+		select max(q_num) from question
+	</select>
+	<select id="detailBoard" resultType="C_Board" parameterType="int">
+		select * from question where q_num = #{value}
+	</select>
+	<update id="updateBoard" parameterType="C_Board">
+		update question set 
+			q_title = #{q_Title},
+			q_content = #{q_Content}
+			where q_num = #{q_Num}
+	</update>
+	<delete id="deleteBoard">
+		delete from question where q_num = #{value}
+	</delete>
+	
+	<select id="getC_Id" parameterType="int" resultType="String">
+		select c_id from customer where c_num = #{value}
+	</select>
+	
+	<select id="addAs_Num" resultType="integer">
+		select max(as_num) from answer
+	</select>
+	
+	<insert id="insertAnswer" parameterType="Answer">
+		insert into answer
+		(as_num,as_content,as_title,as_date,q_num)
+		VALUES
+		(#{as_Num},#{as_Content},#{as_Title},sysdate,#{q_Num})
+	</insert>
+	<select id="ListAnswer" resultType="Answer">
+		select * from answer where q_Num = #{value} order by as_num desc
+	</select>
+	<select id="countAnswer" resultType="int">
+		select count(*) from answer where q_num = #{value}
+	</select>
+	<select id="adShoppingMallList" resultType="ShoppingMall">
+		select 
+		(SELECT DISTINCT s_sname 
+		 from ADSHOPPINGMALL a, SHOPPINGMALL s 
+		 where s.s_num = a.s_num 
+		 and s.s_num = ad.s_num) as S_Name from adshoppingmall ad
+	</select>
+	<select id="getS_Num" parameterType="String" resultType="String">
+		select s_num from shoppingmall where s_sname = #{value}
+	</select>
+	<select id="getC_Num" parameterType="String" resultType="String">
+		select c_num from customer where c_id = #{value}
+	</select>
+	
+	<!-- <insert id="insertBoard" parameterType="board">
+		insert into board3 (b_id, b_name, b_title, b_content, b_pwd, b_date, b_hit)
+		values(#{b_id},#{b_name},#{b_title},#{b_content},#{b_pwd},sysdate,0)
+	</insert>
+	<select id="selectBoard" resultType="integer">
+		select max(b_id) from board3
+	</select>
+	<select id="listBoard" resultType="Board" parameterType="Search">
+		select * from board3 
+		<if test="area != null">
+			<where>
+				<foreach collection="area" item="area" separator="or" >
+					${area} LIKE #{searchKey}
+				</foreach>
+			</where>
+		</if>
+		order by b_id desc
+	</select>
+	<select id="detailBoard" parameterType="int" resultType="board">
+		select * from board3 where b_id = #{value}
+	</select>
+	
+	<update id="updateBoard" parameterType="board">
+		update board3 set b_title = #{b_title}, b_content = #{b_content}
+		where b_id = #{b_id}
+	</update>
+	<update id="updateHit" parameterType="int">
+		update board3 set b_hit = b_hit+1
+		where b_id = #{value}
+	</update>
+	<delete id="deleteBoard" parameterType="int">
+		delete from board3 where b_id = #{value}
+	</delete>
+	<select id="countBoard" parameterType="search" resultType="int">
+		select count(*) from board3
+		 <if test="area != null">
+			<where>
+				<foreach collection="area" item="area" separator="or">
+					${area} LIKE #{searchKey}
+				</foreach>
+			</where>
+		</if> 
+	</select>
+	<select id="selectReply" resultType="integer">
+		select max(r_id) from reply
+	</select>
+	
+	<insert id="insertReply" parameterType="reply">
+		insert into reply (r_id, r_name, r_content, b_id) values (#{r_id},#{r_name},#{r_content},#{b_id})
+	</insert>
+	<select id="replyList" parameterType="int" resultType="reply">
+		select * from reply where b_id = #{value}
+	</select> 
+	q_num, s_num, q_num, q_title, q_content, q_date,(select count(*) from answer q_num = q.q_num)
+	-->
+</mapper>
+

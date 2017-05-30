@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+<mapper namespace="history.mapper.HistoryMapper">
+	<cache />
+	<select id="listHistory" resultType="History">
+		select * from history where c_num = #{value}
+	</select>
+	<select id="countHistory" resultType="int">
+		select count(*) from history where c_num = #{value}
+	</select>
+	
+	<delete id="deleteAction">
+		delete from history where h_num = #{value}
+	</delete>
+	
+	<select id="getHistoryNum" resultType="String">
+		select max(h_num) from history
+	</select>
+	<insert id="insertHistory" parameterType="History">
+		insert into history
+		(h_num, c_num, h_name, h_prdurl, h_imgurl, h_date)
+		values
+		(#{h_Num}, #{c_Num}, #{h_Name}, #{h_Prdurl}, #{h_Imgurl}, sysdate)
+	</insert>
+</mapper>
+

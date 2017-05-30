@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="mypage.mapper.CustomerMapper">
+	<cache/>
+	<delete id="withdrawalCustomer"  parameterType="Customer">
+		delete from customer where c_pass=#{c_pass}
+	</delete>
+	
+	<select id="modifyCheckCustomer" resultType="String" parameterType="Customer">
+		select c_num from customer where c_id=#{c_id} AND c_pass=#{c_pass}
+	</select>
+ 	
+ 	<select id="modifyCustomer" resultType="Customer" parameterType="String">
+ 		select * from customer where c_num = #{c_num}
+ 	</select>
+
+	<update id="ModifySuccess" parameterType="Customer">
+		update customer set c_name=c_name, c_pass=#{c_pass}, c_zipcode=#{c_zipcode},
+		c_adress=#{c_adress}, c_email=#{c_email}, c_sms=#{c_sms} where c_num=#{c_num}
+	</update>
+
+
+</mapper>

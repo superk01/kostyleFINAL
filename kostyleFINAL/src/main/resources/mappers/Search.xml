@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+<mapper namespace="search.mapper.SearchMapper">
+	<cache />
+	<select id="getS_SearchUrl" resultType="String">
+		select s_searchurl from shoppingmall s, adshoppingmall a
+		where s.s_num = a.s_num
+	</select>
+</mapper>
+

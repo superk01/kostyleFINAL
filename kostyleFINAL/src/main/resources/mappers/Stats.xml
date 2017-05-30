@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="stats.mapper.StatsMapper">
+	<cache />
+	
+	<insert id="insertHitCount" parameterType="statsHitCount">
+		insert into hitcount(
+			s_num, cnt_prdurl, cnt_date, c_num
+		)
+		values(
+			#{s_num}, #{cnt_prdurl}, SYSDATE, #{c_num} 
+		)
+	</insert>
+
+	<select id="listHitCount" resultType="statsHitCount">
+		select * from hitcount
+	</select>
+	
+	<select id="getSNum" parameterType="String" resultType="statsShoppingMall">
+		select * from shoppingmall
+			where s_shopurl = #{s_shopurl}
+	</select>
+	
+	<insert id="insertSearchKeyword" parameterType="statsSearchKeyword">
+		insert into searchkeyword(
+			c_num, sk_searchkey, sk_date
+		) 
+		values(
+			#{c_num}, #{sk_searchkey}, SYSDATE
+		)
+	</insert>
+	
+	<select id="listSearchKeyword" resultType="statsSearchKeyword">
+		select * from searchkeyword
+	</select>	
+
+	<!-- 
+	<select id="statsGenderRate" parameterType="string" resultType="statsStatsGender">
+	select h.s_num, count(decode(c.c_gender, 'F', 1, null)) "F", count(decode(c.c_gender, 'M', 1, null)) "M"
+  from customer c, hitcount h
+  where c.c_num = h.c_num
+  and h.s_num = #{s_num}
+  group by h.s_num
+  order by h.s_num
+	
+
+		select c.c_gender, count(*)
+  			from customer c, hitcount h
+  			where c.c_num = h.c_num
+			and h.s_num = #{s_num}
+  			group by c.c_gender
+  		
+	</select>
+		 -->
+	<select id="statsDate_adr" parameterType="String" resultType="statsHitcount">
+	<!-- 
+		select to_char(h.cnt_date,'MM-DD') as "cnt_date", count(decode(c.c_adress, 'Seoul', 1, null)) "Seoul", count(decode(c.c_adress, 'Busan', 1, null)) "Busan", count(decode(c.c_adress, 'Jeju', 1, null)) "Jeju"
+ 			from customer c, hitcount h, shoppingmall s
+  			where c.c_num = h.c_num
+  			and h.s_num = s.s_num
+  			and h.s_num = #{s_num}
+  			and h.cnt_date between #{statsSearchStartDate} and #{statsSearchEndDate}
+  			group by to_char(h.cnt_date,'MM-DD')
+  			order by to_char(h.cnt_date,'MM-DD')
+	 -->
+	 
+	 select to_char(d.cnt_date,'MM-DD') as cnt_date, nvl(e.seoul,0) as Seoul, nvl(e.busan,0) as Busan, nvl(e.jeju,0) as Jeju
+  		from (select to_date(#{statsSearchStartDate})+level-1 as cnt_date
+ 					   	from DUAL
+ 				<![CDATA[
+    					connect by level <= (to_date(#{statsSearchEndDate}) - to_date(#{statsSearchStartDate})+1)) d,
+    			]]>		
+        		(select to_char(h.cnt_date,'YYYY-MM-DD') as cnt_date, count(decode(c.c_adress, 'Seoul', 1, null)) seoul, count(decode(c.c_adress, 'Busan', 1, null)) busan, count(decode(c.c_adress, 'Jeju', 1, null)) jeju
+  						from customer c, hitcount h, shoppingmall s
+  						where c.c_num = h.c_num
+  						and h.s_num = s.s_num
+  						and h.s_num = #{s_num}
+  						group by to_char(h.cnt_date,'YYYY-MM-DD')) e
+    	where d.cnt_date = e.cnt_date(+)
+    	order by d.cnt_date
+	 
+	 
+	</select>
+	
+	<select id="statsDate_gender" parameterType="String" resultType="statsHitcount">
+	select to_char(d.cnt_date,'MM-DD') as cnt_date, nvl(e.f,0) as female, nvl(e.m,0) as male
+  from (select to_date(#{statsSearchStartDate})+level-1 as cnt_date
+    from DUAL
+    <![CDATA[
+    connect by level <= (to_date(#{statsSearchEndDate}) - to_date(#{statsSearchStartDate})+1)) d,
+    ]]>	
+        (select to_char(h.cnt_date, 'YYYY-MM-DD') as cnt_date, count(decode(c.c_gender, 'F', 1,  null)) F, count(decode(c.c_gender, 'M', 1, null)) M
+    from customer c, hitcount h, shoppingmall s
+    where c.c_num = h.c_num
+    and h.s_num = s.s_num
+    and h.s_num = #{s_num}
+    group by to_char(h.cnt_date, 'YYYY-MM-DD')) e
+    where d.cnt_date = e.cnt_date(+)
+    order by d.cnt_date
+	
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="join.mapper.JoinMapper">
+	<cache />
+
+	
+	<insert id="insertJoin" parameterType="Join">
+		insert into customer(
+			c_num, c_birth, c_phonenumber, c_gender, c_email, p_powernum, c_id,
+			c_pass, c_zipcode, c_adress, c_sms, c_name
+		)
+		values(
+			#{c_num}, #{c_birth}, #{c_phonenumber}, #{c_gender}, #{c_email}, 2, #{c_id},
+			#{c_pass}, #{c_zipcode}, #{c_adress}, #{c_sms}, #{c_name}
+		)
+	</insert>
+	
+	<select id = "autoNum" resultType="String">
+		select max(c_num) from customer
+	</select>
+	
+	<select id = "overlapId" parameterType="Join" resultType="Integer">
+		select count(*) from customer where c_id = #{c_id}
+	</select>
+	
+</mapper>
+

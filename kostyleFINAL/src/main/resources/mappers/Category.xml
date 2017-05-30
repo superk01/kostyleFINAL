@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--  mapper interface경로 -->
+<!--  mapperinterface 메소드명과 id명이 일치해야한다.. -->
+<mapper namespace="Category.mapper.CategoryMapper"> 
+	<cache />
+	
+	<select id="categorysmallSelect" resultType="Category.model.Categorysmall" parameterType="String">
+		select * from categorysmall where cm_num = #{cm_num}
+	</select>
+	 
+	<select id="categorymidSelect" resultType="String" parameterType="String">
+		select cm_num from categorymid where cl_num = #{cl_num}
+	</select>
+	
+	<select id="getADShoppingmall" resultType="Category.model.Adshoppingmall">
+		select s_num, s_shopurl, s_searchurl from shoppingmall
+	<!-- 
+		select s.s_num,s.s_shopurl,s.s_searchurl from adshoppingmall ads
+		join shoppingmall s on ads.s_num = s.s_num
+		 -->
+	</select>
+	
+	<select id="getAdShoppingmallJoin" resultType="Category.model.Adshoppingmall">
+		select * from SHOPPINGMALL s, ADSHOPPINGMALL a 
+  		where s.S_NUM = a.S_NUM
+	</select> 
+	
+	<select id="getCategoryList" resultType="Category.model.Category">
+		select rownum, alias.* from (select * from categorylist order by hitcount desc) alias where rownum &lt;= 10
+	</select>
+	
+	<select id="getPickProduct_List_s" resultType="Category.model.PickProduct_List">
+		select clo_prdurl, clo_zzim from CLOSETDETAIL order by 2 desc
+	</select>
+	
+	<insert id="insertCustomer_taste_stack" parameterType="Category.model.Customer_taste_stack">
+		insert into customer_taste(c_num, c_click_keyword,p_url) values(#{c_num}, #{c_click_keyword}, #{p_url})
+	</insert>
+	
+	<select id="getCustomer_taste" resultType="Category.model.Customer_taste_Select" parameterType="String">
+		select count(c_click_keyword), c_click_keyword from customer_taste 
+			group by C_NUM, c_click_keyword 
+			having c_num = #{c_num}
+			order by 1 desc
+	</select>
+	
+	<insert id="insertCategoryList" parameterType="String">
+		insert into categorylist values(#{name},0,'0')
+	</insert>
+	
+	<select id="getCategorylist_brother" resultType="Category.model.Category">
+		select * from(select rownum as row_num, temp.* from(select * from categorylist order by hitcount desc) temp) where row_num between 11 and 100
+	</select>
+	
+	<update id="click_CategoryList" parameterType="String">
+		update categorylist set hitcount = hitcount+1 where name = #{name}
+	</update>
+	<!-- 
+	<insert id="BoardInsert" parameterType="Board">
+		insert into board3(
+			b_id, b_name, b_title, b_content, b_pwd, b_hitcount, b_date
+		)
+		values(
+			#{b_id}, #{b_name}, #{b_title}, #{b_content},
+			#{b_pwd}, 0, SYSDATE
+		)
+	</insert>
+	
+	<select id="boardMax_id" resultType="Integer">
+		select max(b_id) from board3
+	</select>
+	
+	<select id="BoardList" resultType="Board" parameterType="Search">
+		select * from board3
+		<if test="area != null">
+			<where>
+				<foreach collection="area" item="item" separator="or" open="("  close=")">
+					${item} Like #{searchKey}
+				</foreach>
+			</where>
+		</if>
+	</select>
+	
+	<select id="selectBoard" parameterType="int" resultType="Board">
+		select * from board3 where b_id = #{b_id}
+	</select>
+	
+	<update id="updateBoard" parameterType="Board"> 
+		update board3 set b_title = #{b_title} ,
+			b_content = #{b_content}, 
+			b_date = sysdate
+		where b_id = #{b_id}
+	</update>
+	
+	<select id="totalBoardCount" resultType="int" parameterType="Search">
+		select count(b_id) from board3
+		<if test="area != null">
+			<where>
+				<foreach collection="area" item="item" separator="or" open="("  close=")">
+					${item} Like #{searchKey}
+				</foreach>
+			</where>
+		</if>
+	</select>
+	
+	<select id="totalReCount" resultType="Integer" parameterType="int">
+		select count(r_id) from ReComment where b_id = #{b_id} 
+	</select>
+	
+	<insert id="insertReComment" parameterType="kosta.model.ReCommentModel">
+		insert into ReComment(
+			r_name, r_pwd, r_content, r_id, b_id
+		)values(
+			#{r_name}, #{r_pwd}, #{r_content}, #{r_id}, #{b_id}
+		)
+	</insert>
+	
+	<select id="ReCommentList" parameterType="int" resultType="kosta.model.ReCommentModel">
+		select * from ReComment where b_id = #{b_id}
+	</select>
+	 -->
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
